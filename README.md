@@ -1,4 +1,4 @@
-Organizador de Tarefas
+*Organizador de Tarefas*
 
 Projeto desenvolvido em equipe para criar um sistema de organização e gerenciamento de tarefas.
 
