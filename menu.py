@@ -1,12 +1,8 @@
 import os
 import json
+from dados import carregar_tarefas, salvar_tarefas
 
-tarefas = ['Estudar Python', 'Fazer exercicio', 'Estudar Git']
-
-def salvar_tarefas(tarefas):
-    with open("tarefasp.json", "w", encoding="utf-8") as tarefasp:
-        json.dump(tarefas, tarefasp, indent=4, ensure_ascii=False)
-
+tarefas = carregar_tarefas()
 
 def exibir_titulo_programa():
         print("=" * 35)
@@ -25,8 +21,8 @@ def exibir_opcoes():
     print("5- Sair")
 
 def finalizar_programa():
-        exibir_subtitulo('Encerrando o Programa')
-        exit()
+    exibir_subtitulo('Encerrando o Programa')
+    exit()
 
 def voltar_ao_menu_principal():
     input('\nDigite ENTER para voltar ao menu principal > ')
@@ -44,17 +40,52 @@ def exibir_subtitulo(texto):
 def adicionar_tarefa():
     exibir_subtitulo('Cadastro de nova tarefa')
     nome_tarefa = input('Digite o nome da nova tarefa: ')
-    tarefas.append(nome_tarefa)
+    nova_tarefa = {
+        'nome': nome_tarefa,
+        'concluido': False
+    }
+    tarefas.append(nova_tarefa)
     salvar_tarefas(tarefas)
     print(f'A tarefa {nome_tarefa} foi cadastrado com sucesso!')
     voltar_ao_menu_principal()
 
 def listar_tarefas():
     exibir_subtitulo('Listando tarefas')
-    for tarefa in tarefas:
-        print(f'.{tarefa}')
+    for indice, tarefa in enumerate(tarefas):
+        if tarefa['concluido']:
+            print(f'{indice + 1} - [X] {tarefa['nome']}')
+        else:
+            print(f'{indice + 1} - [ ] {tarefa['nome']}')
     voltar_ao_menu_principal()
 
+def marcar_tarefa():
+    exibir_subtitulo('Marcar Tarefa Concluida')
+    for indice, tarefa in enumerate(tarefas):
+        print(f'{indice + 1} - {tarefa['nome']}')
+
+    escolha = int(input('\nDigite o número da tarefa concluída: '))
+
+    if escolha >= 1 and escolha <= len(tarefas):
+        tarefas[escolha - 1]['concluido'] = True
+        salvar_tarefas(tarefas)
+        print('\nTarefa marcada como concluída!')
+    else:
+        print('\nNúmero de tarefa inválido!')
+    voltar_ao_menu_principal()
+
+def remover_tarefa():
+    exibir_subtitulo('Remover Tarefa')
+    for indice, tarefa in enumerate(tarefas):
+        print(f'{indice + 1} - {tarefa['nome']}')
+    escolha = int(input('\nDigite o numero da tarefa que quer remover: '))
+    if escolha >= 1 and escolha <= len(tarefas):
+        tarefa_removida = tarefas.pop(escolha - 1)
+        salvar_tarefas(tarefas)
+        print(f'\nA tarefa {tarefa_removida['nome']} foi removida com sucesso!')
+    else:
+        print('\nNúmero de tarefa inválido!')
+
+    voltar_ao_menu_principal()
 
 def escolher_opcao():
     opcao = input("\nEscolha uma opção: ")
@@ -65,9 +96,9 @@ def escolher_opcao():
     elif opcao == "2":
         listar_tarefas()
     elif opcao == "3":
-        print("Marcar tarefas concluídas")
+        marcar_tarefa()
     elif opcao == "4":
-        print("Remover tarefa")
+        remover_tarefa()
     elif opcao == "5":
         finalizar_programa()
     else:
@@ -80,12 +111,8 @@ def main():
     escolher_opcao()
 
 
-## salvar tarefas
-
 
 if __name__ == '__main__':
-    salvar_tarefas(tarefas)
-
 
     while True:
         main()
